@@ -37,7 +37,6 @@ exclude = [
     ".venv",
     "**/.venv",
     "notebooks",
-    ".stubs",
 ]
 force-exclude = true
 line-length = 120
@@ -63,7 +62,6 @@ reportMissingModuleSource = false
 useLibraryCodeForTypes = false
 reportUnknownMemberType = false
 reportUnknownVariableType = false
-stubPath = ".stubs"
 venvPath = "."
 venv = ".venv"
 exclude = [".venv", "notebooks"]
