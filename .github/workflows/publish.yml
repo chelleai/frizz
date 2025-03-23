@@ -1,0 +1,47 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+
+      - name: Setup UV
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.5.25"
+
+      - name: Initialize environment
+        run: uv sync --all-extras --dev
+
+      - name: Run tests
+        run: uv run pytest
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Build package
+        run: uv build
+
+      - name: Publish package
+        run: uv publish
