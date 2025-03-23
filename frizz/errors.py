@@ -1,0 +1,2 @@
+class FrizzError(Exception):
+    pass

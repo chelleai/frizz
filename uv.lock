@@ -3,16 +3,16 @@ requires-python = ">=3.12"
 
 [[package]]
 name = "aikernel"
-version = "0.1.6"
+version = "0.1.22"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "litellm" },
     { name = "openai" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3b/d3/0d6d1c0fe582073177f3b87076ae6222e6b603f9090dad2b07f1fe03fef9/aikernel-0.1.6.tar.gz", hash = "sha256:659c75048247c2cc06585b26f00c0098b57786360c1b75846f883ba32cb28763", size = 70464 }
+sdist = { url = "https://files.pythonhosted.org/packages/34/ad/589a3b8b4d995be4dc90647613d3b643fac9bef7fff25fb553fef1b89192/aikernel-0.1.22.tar.gz", hash = "sha256:9428158176c2bbdf20dac9155c9ee575e5bf43b2d374c3c5face90a56b604a63", size = 71749 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7c/54/4e2c1e954fcbc62e7b9c2cfbdc1c0bfe6fb2b7d54eeeab1b6643ec3362fe/aikernel-0.1.6-py3-none-any.whl", hash = "sha256:aeb971d585a9848e0b604cfb1d45f15e7b63e0db30260b2f7c3b39dd265ef0a8", size = 7427 },
+    { url = "https://files.pythonhosted.org/packages/71/2f/14dbf55f5d5cee4022daff805c264438bc18e5a088a5671a66a0096c36ff/aikernel-0.1.22-py3-none-any.whl", hash = "sha256:7fc267b4862b8a28c20090c4699076ba6590ecb724c60d84a6c789f14a2440ed", size = 9099 },
 ]
 
 [[package]]
@@ -439,7 +439,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "aikernel", specifier = ">=0.1.6" }]
+requires-dist = [{ name = "aikernel", specifier = ">=0.1.22" }]
 
 [package.metadata.requires-dev]
 dev = [
