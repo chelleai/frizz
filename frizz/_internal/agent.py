@@ -29,7 +29,7 @@ class Agent[ContextT]:
         *,
         tools: list[Tool[ContextT, BaseModel, BaseModel]],
         context: ContextT,
-        system_message: LLMSystemMessage,
+        system_message: LLMSystemMessage | None = None,
         conversation_dump: str | None = None,
     ) -> None:
         self._tools = tools
@@ -37,7 +37,8 @@ class Agent[ContextT]:
         self._conversation = (
             Conversation.load(dump=conversation_dump) if conversation_dump is not None else Conversation()
         )
-        self._conversation.set_system_message(message=system_message)
+        if system_message is not None:
+            self._conversation.set_system_message(message=system_message)
 
     @property
     def conversation(self) -> Conversation:
