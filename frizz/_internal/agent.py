@@ -114,6 +114,12 @@ class Agent[ContextT]:
     def __get_tools_system_message_part(self) -> LLMMessagePart:
         return LLMMessagePart(
             content=f"""
+            Tools are available for use in this conversation.
+
+            When using a tool, your message to the user should indicate to them that you are going to use that tool.
+            Don't use the term "tool", since they don't know what that is. For example, if you have a tool to
+            get the weather, you might say "let me check the weather".
+
             You have access to the following tools:
             {"\n".join([yaml.safe_dump(tool.as_llm_tool().render()) for tool in self._tools])}
         """
