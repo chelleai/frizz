@@ -2,6 +2,7 @@ import json
 from collections.abc import Iterator
 from contextlib import contextmanager
 from functools import cached_property
+from typing import Any
 
 import yaml
 from aikernel import (
@@ -27,7 +28,7 @@ class Agent[ContextT]:
     def __init__(
         self,
         *,
-        tools: list[Tool[ContextT, BaseModel, BaseModel]],
+        tools: list[Tool[ContextT, Any, Any]],
         context: ContextT,
         system_message: LLMSystemMessage | None = None,
         conversation_dump: str | None = None,
