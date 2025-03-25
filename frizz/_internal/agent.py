@@ -19,7 +19,7 @@ from aikernel import (
 from pydantic import BaseModel, ValidationError
 
 from frizz._internal.tools import Tool
-from frizz._internal.types.response import AgentMessage
+from frizz._internal.types.response import AgentMessage, StepResult
 from frizz.errors import FrizzError
 
 
@@ -53,7 +53,7 @@ class Agent[ContextT]:
         with self._conversation.with_temporary_system_message(message_part=self.__get_tools_system_message_part()):
             yield
 
-    async def step(self, *, user_message: LLMUserMessage, model: LLMModel) -> None:
+    async def step(self, *, user_message: LLMUserMessage, model: LLMModel) -> StepResult:
         with self.conversation.session():
             self._conversation.add_user_message(message=user_message)
 
@@ -64,9 +64,10 @@ class Agent[ContextT]:
                     response_model=AgentMessage,
                 )
 
-            self._conversation.add_assistant_message(
-                message=LLMAssistantMessage(parts=[LLMMessagePart(content=agent_message.structured_response.text)])
+            assistant_message = LLMAssistantMessage(
+                parts=[LLMMessagePart(content=agent_message.structured_response.text)]
             )
+            self._conversation.add_assistant_message(message=assistant_message)
 
             if agent_message.structured_response.chosen_tool_name is not None:
                 chosen_tool = self.tools_by_name.get(agent_message.structured_response.chosen_tool_name)
@@ -93,17 +94,20 @@ class Agent[ContextT]:
                         f"Error calling tool {agent_message.structured_response.chosen_tool_name}: {error}"
                     )
 
-                self._conversation.add_tool_message(
-                    tool_message=LLMToolMessage(
-                        tool_call_id=parameters_response.tool_call.id,
+                tool_message = LLMToolMessage(
+                    tool_call_id=parameters_response.tool_call.id,
+                    name=parameters_response.tool_call.tool_name,
+                    response=result.model_dump_json(),
+                    function_call=LLMToolMessageFunctionCall(
                         name=parameters_response.tool_call.tool_name,
-                        response=result.model_dump_json(),
-                        function_call=LLMToolMessageFunctionCall(
-                            name=parameters_response.tool_call.tool_name,
-                            arguments=json.dumps(parameters_response.tool_call.arguments),
-                        ),
-                    )
+                        arguments=json.dumps(parameters_response.tool_call.arguments),
+                    ),
                 )
+                self._conversation.add_tool_message(tool_message=tool_message)
+            else:
+                tool_message = None
+
+        return StepResult(assistant_message=assistant_message, tool_message=tool_message)
 
     def __get_tools_system_message_part(self) -> LLMMessagePart:
         return LLMMessagePart(

@@ -1,3 +1,4 @@
+from aikernel import LLMAssistantMessage, LLMToolMessage
 from pydantic import BaseModel, Field
 
 
@@ -14,3 +15,10 @@ class AgentMessage(BaseModel):
 
     text: str = Field(description="The text of your response to the user's message.")
     chosen_tool_name: str | None = Field(description="The exact name of the tool you want to use, if any.")
+
+
+class StepResult(BaseModel):
+    assistant_message: LLMAssistantMessage | None = Field(
+        description="The assistant message to add to the conversation."
+    )
+    tool_message: LLMToolMessage | None = Field(description="The tool messages to add to the conversation.")
