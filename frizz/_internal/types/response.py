@@ -18,7 +18,5 @@ class AgentMessage(BaseModel):
 
 
 class StepResult(BaseModel):
-    assistant_message: LLMAssistantMessage | None = Field(
-        description="The assistant message to add to the conversation."
-    )
+    assistant_message: LLMAssistantMessage = Field(description="The assistant message to add to the conversation.")
     tool_message: LLMToolMessage | None = Field(description="The tool messages to add to the conversation.")
