@@ -88,7 +88,9 @@ class Agent[ContextT]:
                     )
 
                 try:
-                    result = await chosen_tool(context=self._context, parameters=parameters)
+                    result = await chosen_tool(
+                        context=self._context, parameters=parameters, conversation=self._conversation
+                    )
                 except Exception as error:
                     raise FrizzError(
                         f"Error calling tool {agent_message.structured_response.chosen_tool_name}: {error}"

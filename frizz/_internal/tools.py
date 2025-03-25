@@ -1,13 +1,14 @@
-from typing import Callable, Protocol, get_type_hints
+from collections.abc import Callable
+from typing import Protocol, get_type_hints
 
-from aikernel import LLMTool
+from aikernel import Conversation, LLMTool
 from pydantic import BaseModel
 
 
 class IToolFn[ContextT, ParametersT: BaseModel, ReturnT](Protocol):
     __name__: str
 
-    async def __call__(self, *, context: ContextT, parameters: ParametersT) -> ReturnT: ...
+    async def __call__(self, *, context: ContextT, parameters: ParametersT, conversation: Conversation) -> ReturnT: ...
 
 
 class Tool[ContextT, ParametersT: BaseModel, ReturnT: BaseModel]:
@@ -38,8 +39,8 @@ class Tool[ContextT, ParametersT: BaseModel, ReturnT: BaseModel]:
     def as_llm_tool(self) -> LLMTool[ParametersT]:
         return LLMTool(name=self.name, description=self.description, parameters=self.parameters_model)
 
-    async def __call__(self, *, context: ContextT, parameters: ParametersT) -> ReturnT:
-        return await self._fn(context=context, parameters=parameters)
+    async def __call__(self, *, context: ContextT, parameters: ParametersT, conversation: Conversation) -> ReturnT:
+        return await self._fn(context=context, parameters=parameters, conversation=conversation)
 
 
 def tool[ContextT, ParametersT: BaseModel, ReturnT: BaseModel](
