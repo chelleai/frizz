@@ -1,4 +1,4 @@
-from typing import Protocol, get_type_hints
+from typing import Callable, Protocol, get_type_hints
 
 from aikernel import LLMTool
 from pydantic import BaseModel
@@ -11,12 +11,13 @@ class IToolFn[ContextT, ParametersT: BaseModel, ReturnT](Protocol):
 
 
 class Tool[ContextT, ParametersT: BaseModel, ReturnT: BaseModel]:
-    def __init__(self, fn: IToolFn[ContextT, ParametersT, ReturnT], /) -> None:
+    def __init__(self, fn: IToolFn[ContextT, ParametersT, ReturnT], /, *, name: str | None = None) -> None:
         self._fn = fn
+        self._name = name
 
     @property
     def name(self) -> str:
-        return self._fn.__name__
+        return self._name or self._fn.__name__
 
     @property
     def description(self) -> str:
@@ -42,6 +43,9 @@ class Tool[ContextT, ParametersT: BaseModel, ReturnT: BaseModel]:
 
 
 def tool[ContextT, ParametersT: BaseModel, ReturnT: BaseModel](
-    fn: IToolFn[ContextT, ParametersT, ReturnT], /
-) -> Tool[ContextT, ParametersT, ReturnT]:
-    return Tool(fn)
+    *, name: str
+) -> Callable[[IToolFn[ContextT, ParametersT, ReturnT]], Tool[ContextT, ParametersT, ReturnT]]:
+    def decorator(fn: IToolFn[ContextT, ParametersT, ReturnT]) -> Tool[ContextT, ParametersT, ReturnT]:
+        return Tool(fn, name=name)
+
+    return decorator

@@ -1,4 +1,3 @@
-import json
 from collections.abc import Iterator
 from contextlib import contextmanager
 from functools import cached_property
@@ -98,10 +97,10 @@ class Agent[ContextT]:
                 tool_message = LLMToolMessage(
                     tool_call_id=parameters_response.tool_call.id,
                     name=parameters_response.tool_call.tool_name,
-                    response=result.model_dump_json(),
+                    response=result.model_dump(),
                     function_call=LLMToolMessageFunctionCall(
                         name=parameters_response.tool_call.tool_name,
-                        arguments=json.dumps(parameters_response.tool_call.arguments),
+                        arguments=parameters_response.tool_call.arguments,
                     ),
                 )
                 self._conversation.add_tool_message(tool_message=tool_message)
