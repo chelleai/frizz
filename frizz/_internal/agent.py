@@ -120,6 +120,9 @@ class Agent[ContextT]:
             Don't use the term "tool", since they don't know what that is. For example, if you have a tool to
             get the weather, you might say "let me check the weather".
 
+            When calling a tool, do not include the tool name or any part of the call in the message to the user.
+            Only include the tool name in the chosen tool field of the AgentMessage.
+
             You have access to the following tools:
             {"\n".join([yaml.safe_dump(tool.as_llm_tool().render()) for tool in self._tools])}
         """
