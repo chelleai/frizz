@@ -8,11 +8,12 @@ from aikernel import (
     Conversation,
     LLMAssistantMessage,
     LLMMessagePart,
-    LLMModel,
+    LLMModelAlias,
     LLMSystemMessage,
     LLMToolMessage,
     LLMToolMessageFunctionCall,
     LLMUserMessage,
+    Router,
     llm_structured,
     llm_tool_call,
 )
@@ -20,6 +21,7 @@ from pydantic import BaseModel, ValidationError
 
 from frizz._internal.tools import Tool
 from frizz._internal.types.response import AgentMessage, StepResult
+from frizz._internal.types.system import IGetToolSystemMessagePart
 from frizz.errors import FrizzError
 
 
@@ -31,6 +33,7 @@ class Agent[ContextT]:
         context: ContextT,
         system_message: LLMSystemMessage | None = None,
         conversation_dump: str | None = None,
+        get_tools_system_message_part: IGetToolSystemMessagePart | None = None,
     ) -> None:
         self._tools = tools
         self._context = context
@@ -39,6 +42,8 @@ class Agent[ContextT]:
         )
         if system_message is not None:
             self._conversation.set_system_message(message=system_message)
+
+        self._get_tools_system_message_part = get_tools_system_message_part or _default_get_tools_system_message_part
 
     @property
     def conversation(self) -> Conversation:
@@ -50,10 +55,11 @@ class Agent[ContextT]:
 
     @contextmanager
     def tool_aware_conversation(self) -> Iterator[None]:
-        with self._conversation.with_temporary_system_message(message_part=self.__get_tools_system_message_part()):
+        message_part = self._get_tools_system_message_part(tools=self._tools)
+        with self._conversation.with_temporary_system_message(message_part=message_part):
             yield
 
-    async def step(self, *, user_message: LLMUserMessage, model: LLMModel) -> StepResult:
+    async def step(self, *, user_message: LLMUserMessage, model: LLMModelAlias, router: Router) -> StepResult:
         with self.conversation.session():
             self._conversation.add_user_message(message=user_message)
 
@@ -62,6 +68,7 @@ class Agent[ContextT]:
                     messages=self._conversation.render(),
                     model=model,
                     response_model=AgentMessage,
+                    router=router,
                 )
 
             assistant_message = LLMAssistantMessage(
@@ -80,6 +87,7 @@ class Agent[ContextT]:
                         model=model,
                         tools=[chosen_tool.as_llm_tool()],
                         tool_choice="required",
+                        router=router,
                     )
                     parameters = chosen_tool.parameters_model.model_validate(parameters_response.tool_call.arguments)
                 except ValidationError as error:
@@ -111,19 +119,20 @@ class Agent[ContextT]:
 
         return StepResult(assistant_message=assistant_message, tool_message=tool_message)
 
-    def __get_tools_system_message_part(self) -> LLMMessagePart:
-        return LLMMessagePart(
-            content=f"""
-            Tools are available for use in this conversation.
 
-            When using a tool, your message to the user should indicate to them that you are going to use that tool.
-            Don't use the term "tool", since they don't know what that is. For example, if you have a tool to
-            get the weather, you might say "let me check the weather".
+def _default_get_tools_system_message_part(*, tools: list[Tool[Any, Any, Any]]) -> LLMMessagePart:
+    return LLMMessagePart(
+        content=f"""
+        Tools are available for use in this conversation.
 
-            When calling a tool, do not include the tool name or any part of the call in the message to the user.
-            Only include the tool name in the chosen tool field of the AgentMessage.
+        When using a tool, your message to the user should indicate to them that you are going to use that tool.
+        Don't use the term "tool", since they don't know what that is. For example, if you have a tool to
+        get the weather, you might say "let me check the weather".
 
-            You have access to the following tools:
-            {"\n".join([yaml.safe_dump(tool.as_llm_tool().render()) for tool in self._tools])}
-        """
-        )
+        When calling a tool, do not include the tool name or any part of the call in the message to the user.
+        Only include the tool name in the chosen tool field of the AgentMessage.
+
+        You have access to the following tools:
+        {"\n".join([yaml.safe_dump(tool.as_llm_tool().render()) for tool in tools])}
+    """
+    )
