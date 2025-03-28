@@ -13,7 +13,7 @@ from aikernel import (
     LLMToolMessage,
     LLMToolMessageFunctionCall,
     LLMUserMessage,
-    Router,
+    LLMRouter,
     llm_structured,
     llm_tool_call,
 )
@@ -59,7 +59,7 @@ class Agent[ContextT]:
         with self._conversation.with_temporary_system_message(message_part=message_part):
             yield
 
-    async def step(self, *, user_message: LLMUserMessage, model: LLMModelAlias, router: Router) -> StepResult:
+    async def step[M: LLMModelAlias](self, *, user_message: LLMUserMessage, model: M, router: LLMRouter[M]) -> StepResult:
         with self.conversation.session():
             self._conversation.add_user_message(message=user_message)
 
