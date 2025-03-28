@@ -1,6 +1,6 @@
 [project]
 name = "frizz"
-version = "0.1.28"
+version = "0.1.29"
 description = "A tool-assisted AI conversationalist."
 readme = "README.md"
 authors = [
@@ -10,7 +10,7 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
-    "aikernel==0.1.41",
+    "aikernel==0.1.42",
 ]
 
 [build-system]
