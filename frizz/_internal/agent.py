@@ -26,6 +26,16 @@ from frizz.errors import FrizzError
 
 
 class Agent[ContextT]:
+    """An AI agent capable of using tools to assist in conversations.
+    
+    The Agent class manages conversations with language models and facilitates 
+    the use of tools in response to user queries. It handles the workflow of 
+    receiving user input, generating AI responses, and executing tool calls
+    when appropriate.
+    
+    Type Parameters:
+        ContextT: The type of the context object that will be passed to tools.
+    """
     def __init__(
         self,
         *,
@@ -35,6 +45,15 @@ class Agent[ContextT]:
         conversation_dump: str | None = None,
         get_tools_system_message_part: IGetToolSystemMessagePart | None = None,
     ) -> None:
+        """Initialize a new Agent instance.
+        
+        Args:
+            tools: A list of Tool instances that the agent can use.
+            context: Context object passed to tools when they are called.
+            system_message: Optional system message to set for the conversation.
+            conversation_dump: Optional string dump of a previous conversation to restore.
+            get_tools_system_message_part: Optional function to generate system message part for tools.
+        """
         self._tools = tools
         self._context = context
         self._conversation = (
@@ -47,19 +66,50 @@ class Agent[ContextT]:
 
     @property
     def conversation(self) -> Conversation:
+        """Get the current conversation.
+        
+        Returns:
+            The current Conversation instance.
+        """
         return self._conversation
 
     @cached_property
     def tools_by_name(self) -> dict[str, Tool[ContextT, BaseModel, BaseModel]]:
+        """Get a dictionary of tools indexed by name.
+        
+        Returns:
+            Dictionary mapping tool names to Tool instances.
+        """
         return {tool.name: tool for tool in self._tools}
 
     @contextmanager
     def tool_aware_conversation(self) -> Iterator[None]:
+        """Context manager that temporarily adds tool information to the conversation's system message.
+        
+        Yields:
+            None
+        """
         message_part = self._get_tools_system_message_part(tools=self._tools)
         with self._conversation.with_temporary_system_message(message_part=message_part):
             yield
 
     async def step[M: LLMModelAlias](self, *, user_message: LLMUserMessage, model: M, router: LLMRouter[M]) -> StepResult:
+        """Process a single step of conversation with the agent.
+        
+        This method processes a user message, generates an AI response, and optionally
+        executes a tool call based on the AI's decision.
+        
+        Args:
+            user_message: The user's message to process.
+            model: The LLM model to use for generating responses.
+            router: The router to use for routing requests to the LLM.
+            
+        Returns:
+            A StepResult containing the assistant message and optional tool message.
+            
+        Raises:
+            FrizzError: If a tool is not found, parameters are invalid, or tool execution fails.
+        """
         with self.conversation.session():
             self._conversation.add_user_message(message=user_message)
 
@@ -121,6 +171,17 @@ class Agent[ContextT]:
 
 
 def _default_get_tools_system_message_part(*, tools: list[Tool[Any, Any, Any]]) -> LLMMessagePart:
+    """Generate the default system message part describing available tools.
+    
+    This function creates a message part that instructs the LLM on how to use tools
+    in conversation and provides information about the available tools.
+    
+    Args:
+        tools: List of Tool instances available for use.
+        
+    Returns:
+        A LLMMessagePart containing instructions and tool descriptions.
+    """
     return LLMMessagePart(
         content=f"""
         Tools are available for use in this conversation.
