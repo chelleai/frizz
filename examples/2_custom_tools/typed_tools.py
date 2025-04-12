@@ -10,7 +10,6 @@ from enum import Enum
 
 from aikernel import (
     Conversation,
-    LLMMessagePart,
     LLMRouter,
     LLMSystemMessage,
     LLMUserMessage,
