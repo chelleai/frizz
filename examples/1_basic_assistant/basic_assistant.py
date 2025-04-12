@@ -4,8 +4,9 @@ Example 1: Creating a Basic AI Assistant That Can Call Functions
 This example demonstrates how to create a simple assistant that can use a
 calculator tool to perform arithmetic operations during a conversation.
 """
-from pydantic import BaseModel
 import asyncio
+
+from pydantic import BaseModel
 
 from aikernel import (
     Conversation, 
