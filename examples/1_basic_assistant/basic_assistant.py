@@ -73,7 +73,12 @@ async def main():
     )
     
     # Create a router for the LLM API with gemini-2.0-flash model
+    # Note: Using a single model without fallbacks to get clear errors
     router = get_router(models=("gemini-2.0-flash",))
+    
+    # Print a note about the expected validation errors
+    print("Note: You may see validation errors related to message content being None.")
+    print("This is expected behavior when the model makes a tool call and doesn't provide text content.\n")
     
     # Example conversation
     print("Starting conversation with the calculator assistant...\n")
