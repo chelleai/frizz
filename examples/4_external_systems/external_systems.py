@@ -10,7 +10,7 @@ with a real weather API integration.
 import asyncio
 from datetime import datetime
 
-from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage, get_router
+from aikernel import Conversation, LLMMessagePart, LLMSystemMessage, LLMUserMessage, get_router
 from pydantic import BaseModel, Field
 
 from frizz import Agent, tool

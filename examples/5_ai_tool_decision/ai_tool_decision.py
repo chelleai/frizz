@@ -7,7 +7,7 @@ during a conversation, choosing between multiple available tools or direct respo
 import asyncio
 import re
 
-from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage, get_router
+from aikernel import Conversation, LLMMessagePart, LLMSystemMessage, LLMUserMessage, get_router
 from pydantic import BaseModel, Field
 
 from frizz import Agent, tool

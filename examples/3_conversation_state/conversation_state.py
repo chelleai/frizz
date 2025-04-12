@@ -6,7 +6,7 @@ and how context can be used to store and retrieve information during a conversat
 """
 import asyncio
 
-from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage, get_router
+from aikernel import Conversation, LLMMessagePart, LLMSystemMessage, LLMUserMessage, get_router
 from pydantic import BaseModel, Field
 
 from frizz import Agent, tool

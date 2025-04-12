@@ -6,7 +6,7 @@ calculator tool to perform arithmetic operations during a conversation.
 """
 import asyncio
 
-from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage, get_router
+from aikernel import Conversation, LLMMessagePart, LLMSystemMessage, LLMUserMessage, get_router
 from pydantic import BaseModel
 
 from frizz import Agent, tool
