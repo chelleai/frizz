@@ -6,7 +6,7 @@ and how context can be used to store and retrieve information during a conversat
 """
 import asyncio
 
-from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
+from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage
 from pydantic import BaseModel, Field
 
 from frizz import Agent, tool
@@ -173,12 +173,12 @@ async def main():
     agent = Agent(
         tools=[add_to_cart, remove_from_cart, view_cart],
         context=shopping_context,
-        system_message=LLMSystemMessage(content="""
+        system_message=LLMSystemMessage(parts=[LLMMessagePart(content="""
             You are a shopping assistant that helps users manage their shopping cart.
             When users ask to add or remove items, use the appropriate tools.
             When users ask about what's in their cart, use the view_cart tool.
             Always refer to products by their exact name as shown in the catalog.
-        """)
+        """)])
     )
     
     # Create a router for the LLM API
@@ -188,7 +188,7 @@ async def main():
     print("Starting conversation with the shopping assistant...\n")
     
     # First interaction: Add to cart
-    user_message = LLMUserMessage(content="I'd like to add a Laptop and two Headphones to my cart")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="I'd like to add a Laptop and two Headphones to my cart")])
     print(f"User: {user_message.content}")
     
     result = await agent.step(
@@ -200,7 +200,7 @@ async def main():
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
     # Second interaction: Check cart contents
-    user_message = LLMUserMessage(content="What's in my cart now?")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="What's in my cart now?")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(
@@ -212,7 +212,7 @@ async def main():
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
     # Third interaction: Remove an item
-    user_message = LLMUserMessage(content="Remove one of the headphones please")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="Remove one of the headphones please")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(
@@ -224,7 +224,7 @@ async def main():
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
     # Fourth interaction: Add more items
-    user_message = LLMUserMessage(content="Add a Coffee Maker and a T-shirt")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="Add a Coffee Maker and a T-shirt")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(
@@ -236,7 +236,7 @@ async def main():
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
     # Final interaction: Check the updated cart
-    user_message = LLMUserMessage(content="Show me my final cart")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="Show me my final cart")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(

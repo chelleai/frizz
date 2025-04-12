@@ -6,7 +6,7 @@ calculator tool to perform arithmetic operations during a conversation.
 """
 import asyncio
 
-from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
+from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage
 from pydantic import BaseModel
 
 from frizz import Agent, tool
@@ -64,10 +64,10 @@ async def main():
     agent = Agent(
         tools=[calculator],
         context=MyContext(),
-        system_message=LLMSystemMessage(content="""
+        system_message=LLMSystemMessage(parts=[LLMMessagePart(content="""
             You are a helpful assistant that can perform calculations.
             When asked to perform arithmetic, use the calculator tool rather than calculating yourself.
-        """)
+        """)])
     )
     
     # Create a router for the LLM API
@@ -81,7 +81,7 @@ async def main():
     print("Starting conversation with the calculator assistant...\n")
     
     # First user message asking for a calculation
-    user_message = LLMUserMessage(content="What is 125 * 37?")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="What is 125 * 37?")])
     print(f"User: {user_message.content}")
     
     # Let the agent process the message
@@ -98,7 +98,7 @@ async def main():
         print(f"Tool Result: {result.tool_message}")
     
     # Second user message with a more complex request
-    user_message = LLMUserMessage(content="If I have 250 items that cost $13.50 each, what's my total cost?")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="If I have 250 items that cost $13.50 each, what's my total cost?")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(

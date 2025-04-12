@@ -7,7 +7,7 @@ during a conversation, choosing between multiple available tools or direct respo
 import asyncio
 import re
 
-from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
+from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage
 from pydantic import BaseModel, Field
 
 from frizz import Agent, tool
@@ -241,7 +241,7 @@ async def main():
     agent = Agent(
         tools=[lookup_fact, calculate, tell_joke],
         context=context,
-        system_message=LLMSystemMessage(content="""
+        system_message=LLMSystemMessage(parts=[LLMMessagePart(content="""
             You are a helpful assistant that can answer questions, solve problems, and tell jokes.
             You have several tools available:
             
@@ -251,7 +251,7 @@ async def main():
             
             For other types of questions or conversations, answer directly without using tools.
             Choose the most appropriate approach for each user request.
-        """)
+        """)])
     )
     
     # Create a router for the LLM API
@@ -261,7 +261,7 @@ async def main():
     print("Starting conversation with the multi-tool assistant...\n")
     
     # Example 1: Factual question that should use the lookup tool
-    user_message = LLMUserMessage(content="Can you tell me about Mars?")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="Can you tell me about Mars?")])
     print(f"User: {user_message.content}")
     
     result = await agent.step(
@@ -273,7 +273,7 @@ async def main():
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
     # Example 2: Math question that should use the calculator tool
-    user_message = LLMUserMessage(content="What's 235 + 489?")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="What's 235 + 489?")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(
@@ -285,7 +285,7 @@ async def main():
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
     # Example 3: Request for a joke
-    user_message = LLMUserMessage(content="Tell me a programming joke")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="Tell me a programming joke")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(
@@ -297,7 +297,7 @@ async def main():
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
     # Example 4: General question that shouldn't use tools
-    user_message = LLMUserMessage(content="How are you today?")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="How are you today?")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(

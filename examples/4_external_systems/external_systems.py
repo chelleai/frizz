@@ -10,7 +10,7 @@ with a real weather API integration.
 import asyncio
 from datetime import datetime
 
-from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
+from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage
 from pydantic import BaseModel, Field
 
 from frizz import Agent, tool
@@ -167,12 +167,12 @@ async def main():
     agent = Agent(
         tools=[get_weather],
         context=systems_context,
-        system_message=LLMSystemMessage(content="""
+        system_message=LLMSystemMessage(parts=[LLMMessagePart(content="""
             You are a helpful weather assistant that can provide weather information.
             When asked about weather, use the get_weather tool to fetch real-time data.
             Always interpret the weather data and provide a friendly, conversational response.
             Convert units if the user asks for non-metric units.
-        """)
+        """)])
     )
     
     # Create a router for the LLM API
@@ -182,7 +182,7 @@ async def main():
     print("Starting conversation with the weather assistant...\n")
     
     # First interaction: Check current weather
-    user_message = LLMUserMessage(content="What's the weather like in London?")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="What's the weather like in London?")])
     print(f"User: {user_message.content}")
     
     result = await agent.step(
@@ -194,7 +194,7 @@ async def main():
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
     # Second interaction: Get a forecast
-    user_message = LLMUserMessage(content="Can you give me a 3-day forecast for Tokyo?")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="Can you give me a 3-day forecast for Tokyo?")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(
@@ -206,7 +206,7 @@ async def main():
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
     # Third interaction: Ask about a different location
-    user_message = LLMUserMessage(content="How about New York? And can you give me the temperature in Fahrenheit?")
+    user_message = LLMUserMessage(parts=[LLMMessagePart(content="How about New York? And can you give me the temperature in Fahrenheit?")])
     print(f"\nUser: {user_message.content}")
     
     result = await agent.step(
