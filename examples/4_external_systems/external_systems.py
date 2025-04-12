@@ -9,11 +9,11 @@ with a real weather API integration.
 """
 import asyncio
 from datetime import datetime
-from typing import Optional
 
 from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
-from frizz import Agent, tool
 from pydantic import BaseModel, Field
+
+from frizz import Agent, tool
 
 
 # Models for the weather tool

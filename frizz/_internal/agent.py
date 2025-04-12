@@ -15,13 +15,13 @@ from aikernel import (
     LLMUserMessage,
     LLMRouter,
     llm_structured,
-    llm_tool_call,
 )
 from pydantic import BaseModel, ValidationError
 
 from frizz._internal.tools import Tool
 from frizz._internal.types.response import AgentMessage, StepResult
 from frizz._internal.types.system import IGetToolSystemMessagePart
+from frizz._internal.patched_tools import patched_llm_tool_call as llm_tool_call
 from frizz.errors import FrizzError
 
 
@@ -114,9 +114,10 @@ class Agent[ContextT]:
             self._conversation.add_user_message(message=user_message)
 
             with self.tool_aware_conversation():
+                # Removed model parameter as it's not supported in the current llm_structured API
+                # The router already knows which model to use
                 agent_message = await llm_structured(
                     messages=self._conversation.render(),
-                    model=model,
                     response_model=AgentMessage,
                     router=router,
                 )
@@ -134,7 +135,7 @@ class Agent[ContextT]:
                 try:
                     parameters_response = await llm_tool_call(
                         messages=self._conversation.render(),
-                        model=model,
+                        model=model,  # This parameter is required for llm_tool_call
                         tools=[chosen_tool.as_llm_tool()],
                         tool_choice="required",
                         router=router,

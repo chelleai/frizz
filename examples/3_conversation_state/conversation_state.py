@@ -5,11 +5,11 @@ This example demonstrates how an agent can maintain state across multiple intera
 and how context can be used to store and retrieve information during a conversation.
 """
 import asyncio
-from typing import Optional
 
 from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
-from frizz import Agent, tool
 from pydantic import BaseModel, Field
+
+from frizz import Agent, tool
 
 
 # Models for the shopping cart tool

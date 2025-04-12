@@ -6,11 +6,11 @@ during a conversation, choosing between multiple available tools or direct respo
 """
 import asyncio
 import re
-from typing import Optional
 
 from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
-from frizz import Agent, tool
 from pydantic import BaseModel, Field
+
+from frizz import Agent, tool
 
 
 # Models for different tools the AI can choose between
