@@ -10,9 +10,11 @@ import sys
 
 from aikernel import Conversation, LLMMessagePart, LLMSystemMessage, LLMUserMessage, get_router
 from pydantic import BaseModel
+
 # Add the parent directory to the path so we can import the custom_agent module
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from custom_agent import Agent
+
 from frizz import tool
 
 
