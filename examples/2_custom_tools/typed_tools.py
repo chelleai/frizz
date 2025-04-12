@@ -11,9 +11,9 @@ from enum import Enum
 from aikernel import (
     Conversation,
     LLMMessagePart,
+    LLMRouter,
     LLMSystemMessage,
     LLMUserMessage,
-    LLMRouter,
 )
 from frizz import Agent, tool
 from pydantic import BaseModel, Field, field_validator
