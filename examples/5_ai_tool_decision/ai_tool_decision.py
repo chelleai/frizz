@@ -278,6 +278,16 @@ async def main():
     
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
+    if result.tool_message:
+        # Extract and display the tool result in a user-friendly way
+        tool_name = result.tool_message.name
+        response = result.tool_message.response
+        
+        if tool_name == "lookup_fact":
+            print(f"Fact: {response.get('fact')}")
+            if response.get('source'):
+                print(f"Source: {response.get('source')}")
+        
     # Example 2: Math question that should use the calculator tool
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="What's 235 + 489?")])
     print(f"\nUser: {user_message.parts[0].content}")
@@ -289,6 +299,18 @@ async def main():
     )
     
     print(f"Assistant: {result.assistant_message.parts[0].content}")
+    
+    if result.tool_message:
+        # Extract and display the tool result in a user-friendly way
+        tool_name = result.tool_message.name
+        response = result.tool_message.response
+        
+        if tool_name == "calculate":
+            print(f"Result: {response.get('result')}")
+            if response.get('steps'):
+                print("Steps:")
+                for step in response.get('steps'):
+                    print(f"  - {step}")
     
     # Example 3: Request for a joke
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="Tell me a programming joke")])
@@ -302,6 +324,15 @@ async def main():
     
     print(f"Assistant: {result.assistant_message.parts[0].content}")
     
+    if result.tool_message:
+        # Extract and display the tool result in a user-friendly way
+        tool_name = result.tool_message.name
+        response = result.tool_message.response
+        
+        if tool_name == "tell_joke":
+            print(f"Joke: {response.get('joke')}")
+            print(f"Type: {response.get('type')}")
+    
     # Example 4: General question that shouldn't use tools
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="How are you today?")])
     print(f"\nUser: {user_message.parts[0].content}")
@@ -313,6 +344,10 @@ async def main():
     )
     
     print(f"Assistant: {result.assistant_message.parts[0].content}")
+    
+    if result.tool_message:
+        print(f"Tool used: {result.tool_message.name}")
+        print(f"Response: {result.tool_message.response}")
 
 
 if __name__ == "__main__":
