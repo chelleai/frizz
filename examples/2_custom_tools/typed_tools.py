@@ -175,7 +175,6 @@ async def main():
             
             NEVER use parameters like "operation", "a", or "b" as these are for calculator tools which you DO NOT have access to.
         """)
-        )
     )
     
     # Create a router for the LLM API
