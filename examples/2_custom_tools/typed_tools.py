@@ -4,14 +4,20 @@ Example 2: Defining Custom Tools with Typed Parameters and Validation
 This example demonstrates how to create complex tools with proper type validation
 using Pydantic models, including nested models and validation constraints.
 """
+import asyncio
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
-import asyncio
+from typing import Optional
 
-from pydantic import BaseModel, Field, field_validator
-from aikernel import Conversation, LLMUserMessage, LLMSystemMessage, LLMRouter
+from aikernel import (
+    Conversation,
+    LLMMessagePart,
+    LLMRouter,
+    LLMSystemMessage,
+    LLMUserMessage,
+)
 from frizz import Agent, tool
+from pydantic import BaseModel, Field, field_validator
 
 
 # Define complex parameter models with validation
@@ -36,10 +42,10 @@ class MoodTag(str, Enum):
 
 class RecommendationParams(BaseModel):
     """Parameters for the music recommendation tool with validation."""
-    genres: List[Genre] = Field(..., description="List of music genres to include")
-    release_year_min: Optional[int] = Field(None, description="Minimum release year")
-    release_year_max: Optional[int] = Field(None, description="Maximum release year")
-    mood: Optional[MoodTag] = Field(None, description="Desired mood")
+    genres: list[Genre] = Field(..., description="List of music genres to include")
+    release_year_min: int | None = Field(None, description="Minimum release year")
+    release_year_max: int | None = Field(None, description="Maximum release year")
+    mood: MoodTag | None = Field(None, description="Desired mood")
     limit: int = Field(5, description="Number of recommendations to return", ge=1, le=10)
     
     @field_validator("release_year_min", "release_year_max")
@@ -69,9 +75,9 @@ class Song(BaseModel):
 
 class RecommendationResult(BaseModel):
     """Return type for the music recommendation tool."""
-    recommendations: List[Song]
+    recommendations: list[Song]
     count: int
-    genres_included: List[Genre]
+    genres_included: list[Genre]
     message: str
 
 
