@@ -100,7 +100,6 @@ async def main():
     print(f"User: {user_message.parts[0].content}")
     
     # Let the agent process the message
-    # Pass both router and model to step method
     result = await agent.step(
         user_message=user_message,
         model="gemini-2.0-flash",
