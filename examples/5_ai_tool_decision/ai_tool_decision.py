@@ -262,7 +262,7 @@ async def main():
     
     # Example 1: Factual question that should use the lookup tool
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="Can you tell me about Mars?")])
-    print(f"User: {user_message.content}")
+    print(f"User: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -274,7 +274,7 @@ async def main():
     
     # Example 2: Math question that should use the calculator tool
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="What's 235 + 489?")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -286,7 +286,7 @@ async def main():
     
     # Example 3: Request for a joke
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="Tell me a programming joke")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -298,7 +298,7 @@ async def main():
     
     # Example 4: General question that shouldn't use tools
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="How are you today?")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,

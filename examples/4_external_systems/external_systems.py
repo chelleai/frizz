@@ -183,7 +183,7 @@ async def main():
     
     # First interaction: Check current weather
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="What's the weather like in London?")])
-    print(f"User: {user_message.content}")
+    print(f"User: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -195,7 +195,7 @@ async def main():
     
     # Second interaction: Get a forecast
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="Can you give me a 3-day forecast for Tokyo?")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -207,7 +207,7 @@ async def main():
     
     # Third interaction: Ask about a different location
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="How about New York? And can you give me the temperature in Fahrenheit?")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,

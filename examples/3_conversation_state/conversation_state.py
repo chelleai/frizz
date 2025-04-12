@@ -189,7 +189,7 @@ async def main():
     
     # First interaction: Add to cart
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="I'd like to add a Laptop and two Headphones to my cart")])
-    print(f"User: {user_message.content}")
+    print(f"User: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -201,7 +201,7 @@ async def main():
     
     # Second interaction: Check cart contents
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="What's in my cart now?")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -213,7 +213,7 @@ async def main():
     
     # Third interaction: Remove an item
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="Remove one of the headphones please")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -225,7 +225,7 @@ async def main():
     
     # Fourth interaction: Add more items
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="Add a Coffee Maker and a T-shirt")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -237,11 +237,11 @@ async def main():
     
     # Final interaction: Check the updated cart
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="Show me my final cart")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
-        model="claude-3-sonnet-20240229",
+        model="gemini-2.0-flash",
         router=router
     )
     

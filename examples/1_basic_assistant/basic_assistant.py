@@ -82,7 +82,7 @@ async def main():
     
     # First user message asking for a calculation
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="What is 125 * 37?")])
-    print(f"User: {user_message.content}")
+    print(f"User: {user_message.parts[0].content}")
     
     # Let the agent process the message
     # Pass both router and model to step method
@@ -99,7 +99,7 @@ async def main():
     
     # Second user message with a more complex request
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="If I have 250 items that cost $13.50 each, what's my total cost?")])
-    print(f"\nUser: {user_message.content}")
+    print(f"\nUser: {user_message.parts[0].content}")
     
     result = await agent.step(
         user_message=user_message,
