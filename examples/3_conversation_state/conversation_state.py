@@ -7,9 +7,9 @@ and how context can be used to store and retrieve information during a conversat
 import asyncio
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field
-from aikernel import Conversation, LLMUserMessage, LLMSystemMessage, LLMRouter
+from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
 from frizz import Agent, tool
+from pydantic import BaseModel, Field
 
 
 # Models for the shopping cart tool

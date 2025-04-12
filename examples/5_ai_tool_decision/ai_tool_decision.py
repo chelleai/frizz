@@ -8,9 +8,9 @@ import asyncio
 import re
 from typing import List, Optional, Dict, Any
 
-from pydantic import BaseModel, Field
-from aikernel import Conversation, LLMUserMessage, LLMSystemMessage, LLMRouter
+from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
 from frizz import Agent, tool
+from pydantic import BaseModel, Field
 
 
 # Models for different tools the AI can choose between
