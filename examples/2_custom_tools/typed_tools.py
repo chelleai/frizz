@@ -161,19 +161,29 @@ async def main():
             - mood: Desired mood (optional) - Must be one of: ["happy", "sad", "energetic", "relaxed", "focused"]
             - limit: Number of recommendations (optional, default 5)
             
-            For a request about rock and jazz with relaxed mood, you MUST use:
+            EXAMPLES:
+            
+            When a user asks for rock and jazz with relaxed mood, your tool call MUST look EXACTLY like this:
             {
-              "genres": ["rock", "jazz"],
-              "mood": "relaxed"
+              "name": "recommend_music",
+              "arguments": {
+                "genres": ["rock", "jazz"],
+                "mood": "relaxed"
+              }
             }
             
-            For a request about classical music before 1900, you MUST use:
+            When a user asks for classical music before 1900, your tool call MUST look EXACTLY like this:
             {
-              "genres": ["classical"],
-              "release_year_max": 1900
+              "name": "recommend_music",
+              "arguments": {
+                "genres": ["classical"],
+                "release_year_max": 1900
+              }
             }
             
             NEVER use parameters like "operation", "a", or "b" as these are for calculator tools which you DO NOT have access to.
+            
+            ALWAYS include the "genres" parameter as it is required.
         """)])
     )
     

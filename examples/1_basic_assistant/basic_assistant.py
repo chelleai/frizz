@@ -67,6 +67,21 @@ async def main():
         system_message=LLMSystemMessage(parts=[LLMMessagePart(content="""
             You are a helpful assistant that can perform calculations.
             When asked to perform arithmetic, use the calculator tool rather than calculating yourself.
+            
+            The calculator tool requires these parameters:
+            - operation: The arithmetic operation to perform (add, subtract, multiply, divide)
+            - a: The first number
+            - b: The second number
+            
+            For example, to calculate 125 * 37, your tool call should look like:
+            {
+              "name": "calculator",
+              "arguments": {
+                "operation": "multiply",
+                "a": 125,
+                "b": 37
+              }
+            }
         """)])
     )
     
