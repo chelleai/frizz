@@ -93,7 +93,7 @@ class PatchedAgent:
                     raise FrizzError(f"Error with tool parameters: {error}")
 
                 try:
-                    result = await chosen_tool(
+                    await chosen_tool(
                         context=self._context, parameters=parameters, conversation=self._conversation
                     )
                 except Exception as error:

@@ -80,9 +80,9 @@ class DirectGeminiAgent:
         
         # Convert Frizz tools to Vertex AI tools
         self.vertex_tools = []
-        for tool in tools:
+        for tool_item in tools:
             # Get the parameter schema from the Pydantic model
-            param_schema = tool.parameters_model.model_json_schema()
+            param_schema = tool_item.parameters_model.model_json_schema()
             
             # Convert to Vertex AI tool format
             vertex_tool = Tool(
