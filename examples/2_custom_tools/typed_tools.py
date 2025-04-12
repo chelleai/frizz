@@ -152,29 +152,29 @@ async def main():
             parts=[LLMMessagePart(content="""
             You are a music recommendation assistant. Help users find music they might enjoy.
             
-            IMPORTANT: You have access to ONLY ONE tool called "recommend_music" which you must use
-            whenever a user asks for music suggestions.
+            CRITICAL INSTRUCTION: You have ONLY ONE tool available called "recommend_music".
+            DO NOT attempt to use any calculator tools or any other tools.
             
-            The recommend_music tool requires the following parameters:
-            - genres: A list of music genres (required) - Choose from: pop, rock, jazz, classical, electronic, hip_hop
+            The recommend_music tool requires these EXACT parameters:
+            - genres: A list of music genres (REQUIRED) - Must be an array containing one or more of: ["pop", "rock", "jazz", "classical", "electronic", "hip_hop"]
             - release_year_min: Minimum release year (optional)
             - release_year_max: Maximum release year (optional)
-            - mood: Desired mood (optional) - Choose from: happy, sad, energetic, relaxed, focused
+            - mood: Desired mood (optional) - Must be one of: ["happy", "sad", "energetic", "relaxed", "focused"]
             - limit: Number of recommendations (optional, default 5)
             
-            EXAMPLE TOOL CALL FOR ROCK AND JAZZ WITH RELAXED MOOD:
+            For a request about rock and jazz with relaxed mood, you MUST use:
             {
               "genres": ["rock", "jazz"],
-              "mood": "relaxed",
-              "limit": 5
+              "mood": "relaxed"
             }
             
-            EXAMPLE TOOL CALL FOR CLASSICAL MUSIC BEFORE 1900:
+            For a request about classical music before 1900, you MUST use:
             {
               "genres": ["classical"],
-              "release_year_max": 1900,
-              "limit": 3
+              "release_year_max": 1900
             }
+            
+            NEVER use parameters like "operation", "a", or "b" as these are for calculator tools which you DO NOT have access to.
         """)]
         )
     )
