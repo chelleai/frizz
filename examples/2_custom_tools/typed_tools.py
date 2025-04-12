@@ -153,28 +153,34 @@ async def main():
             You are a music recommendation assistant. Help users find music they might enjoy.
             
             IMPORTANT: You have access to ONLY ONE tool called "recommend_music" which you must use
-            whenever a user asks for music suggestions. Do not try to use any calculator tools.
+            whenever a user asks for music suggestions.
             
             The recommend_music tool requires the following parameters:
-            - genres: A list of music genres (required)
+            - genres: A list of music genres (required) - Choose from: pop, rock, jazz, classical, electronic, hip_hop
             - release_year_min: Minimum release year (optional)
             - release_year_max: Maximum release year (optional)
-            - mood: Desired mood (optional)
+            - mood: Desired mood (optional) - Choose from: happy, sad, energetic, relaxed, focused
             - limit: Number of recommendations (optional, default 5)
             
-            Example tool call:
+            EXAMPLE TOOL CALL FOR ROCK AND JAZZ WITH RELAXED MOOD:
             {
               "genres": ["rock", "jazz"],
               "mood": "relaxed",
               "limit": 5
             }
+            
+            EXAMPLE TOOL CALL FOR CLASSICAL MUSIC BEFORE 1900:
+            {
+              "genres": ["classical"],
+              "release_year_max": 1900,
+              "limit": 3
+            }
         """)]
         )
     )
     
-    # Create a router for the LLM API with Claude model
-    # Claude models handle structured tool calls better than Gemini for this example
-    router = get_router(models=("claude-3.5-sonnet",))
+    # Create a router for the LLM API with Gemini model
+    router = get_router(models=("gemini-2.0-flash",))
     
     # Print a note about the expected validation errors
     print("Note: You may see validation errors related to message content being None.")
@@ -189,7 +195,7 @@ async def main():
     
     result = await agent.step(
         user_message=user_message,
-        model="claude-3.5-sonnet",
+        model="gemini-2.0-flash",
         router=router
     )
     
@@ -204,7 +210,7 @@ async def main():
     
     result = await agent.step(
         user_message=user_message,
-        model="claude-3.5-sonnet",
+        model="gemini-2.0-flash",
         router=router
     )
     
