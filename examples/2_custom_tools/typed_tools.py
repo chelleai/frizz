@@ -15,8 +15,8 @@ from aikernel import (
     LLMUserMessage,
     LLMRouter,
 )
-from pydantic import BaseModel, Field, field_validator
 from frizz import Agent, tool
+from pydantic import BaseModel, Field, field_validator
 
 
 # Define complex parameter models with validation
