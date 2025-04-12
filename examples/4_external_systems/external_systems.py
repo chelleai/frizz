@@ -176,7 +176,7 @@ async def main():
     )
     
     # Create a router for the LLM API
-    router = get_router(models=("claude-3-sonnet-20240229",))
+    router = get_router(models=("gemini-2.0-flash",))
     
     # Example conversation
     print("Starting conversation with the weather assistant...\n")
@@ -187,7 +187,7 @@ async def main():
     
     result = await agent.step(
         user_message=user_message,
-        model="claude-3-sonnet-20240229",
+        model="gemini-2.0-flash",
         router=router
     )
     
@@ -199,7 +199,7 @@ async def main():
     
     result = await agent.step(
         user_message=user_message,
-        model="claude-3-sonnet-20240229",
+        model="gemini-2.0-flash",
         router=router
     )
     
@@ -211,7 +211,7 @@ async def main():
     
     result = await agent.step(
         user_message=user_message,
-        model="claude-3-sonnet-20240229",
+        model="gemini-2.0-flash",
         router=router
     )
     

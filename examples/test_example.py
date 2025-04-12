@@ -44,7 +44,7 @@ async def main():
     )
     
     # Create a router
-    router = get_router(models=("claude-3.7-sonnet",))
+    router = get_router(models=("gemini-2.0-flash",))
     
     # Simple conversation
     print("Starting conversation with the echo assistant...\n")
@@ -57,7 +57,7 @@ async def main():
         # Step with the agent
         result = await agent.step(
             user_message=user_message,
-            model="claude-3.7-sonnet",
+            model="gemini-2.0-flash",
             router=router
         )
         
