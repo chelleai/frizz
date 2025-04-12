@@ -148,8 +148,7 @@ async def main():
     agent = Agent(
         tools=[recommend_music],
         context=context,
-        system_message=LLMSystemMessage(
-            parts=[LLMMessagePart(content="""
+        system_message=LLMSystemMessage(content="""
             You are a music recommendation assistant. Help users find music they might enjoy.
             
             CRITICAL INSTRUCTION: You have ONLY ONE tool available called "recommend_music".
@@ -175,7 +174,7 @@ async def main():
             }
             
             NEVER use parameters like "operation", "a", or "b" as these are for calculator tools which you DO NOT have access to.
-        """)]
+        """)
         )
     )
     
@@ -190,8 +189,8 @@ async def main():
     print("Starting conversation with the music recommendation assistant...\n")
     
     # User asks for recommendations
-    user_message = LLMUserMessage(parts=[LLMMessagePart(content="Can you recommend some rock and jazz songs with a relaxed mood?")])
-    print(f"User: {user_message.parts[0].content}")
+    user_message = LLMUserMessage(content="Can you recommend some rock and jazz songs with a relaxed mood?")
+    print(f"User: {user_message.content}")
     
     result = await agent.step(
         user_message=user_message,
@@ -205,8 +204,8 @@ async def main():
         print(f"Tool Result: {result.tool_message}")
     
     # User refines their request
-    user_message = LLMUserMessage(parts=[LLMMessagePart(content="How about some classical music from before 1900?")])
-    print(f"\nUser: {user_message.parts[0].content}")
+    user_message = LLMUserMessage(content="How about some classical music from before 1900?")
+    print(f"\nUser: {user_message.content}")
     
     result = await agent.step(
         user_message=user_message,
