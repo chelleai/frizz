@@ -7,7 +7,6 @@ using Pydantic models, including nested models and validation constraints.
 import asyncio
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 from aikernel import (
     Conversation,
