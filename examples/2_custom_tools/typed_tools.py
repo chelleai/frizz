@@ -170,25 +170,70 @@ async def main():
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="Can you recommend some rock and jazz songs with a relaxed mood?")])
     print(f"User: {user_message.parts[0].content}")
     
-    result = await agent.step(
-        user_message=user_message,
-        model="gemini-2.0-flash",
-        router=router
-    )
-    
-    print(f"Assistant: {result.assistant_message.parts[0].content}")
+    try:
+        result = await agent.step(
+            user_message=user_message,
+            model="gemini-2.0-flash",
+            router=router
+        )
+        
+        print(f"Assistant: {result.assistant_message.parts[0].content}")
+        
+        if result.tool_message:
+            print(f"Tool Result: {result.tool_message}")
+    except Exception as e:
+        print(f"Error: {e}")
+        print("\nFalling back to mock recommendation...")
+        
+        # Mock recommendation when the model fails
+        mock_result = RecommendationResult(
+            recommendations=[
+                Song(title="Take Five", artist="Dave Brubeck", release_year=1959, genre=Genre.JAZZ, mood=MoodTag.RELAXED),
+                Song(title="La Vie En Rose", artist="Edith Piaf", release_year=1945, genre=Genre.JAZZ, mood=MoodTag.RELAXED),
+                Song(title="Yesterday", artist="The Beatles", release_year=1965, genre=Genre.ROCK, mood=MoodTag.SAD)
+            ],
+            count=3,
+            genres_included=[Genre.JAZZ, Genre.ROCK],
+            message="Found 3 songs matching your criteria."
+        )
+        
+        print("Assistant: I found some relaxed jazz and rock songs for you:")
+        for song in mock_result.recommendations:
+            print(f"- {song.title} by {song.artist} ({song.release_year}, {song.genre.value}, {song.mood.value})")
     
     # User refines their request
     user_message = LLMUserMessage(parts=[LLMMessagePart(content="How about some classical music from before 1900?")])
     print(f"\nUser: {user_message.parts[0].content}")
     
-    result = await agent.step(
-        user_message=user_message,
-        model="gemini-2.0-flash",
-        router=router
-    )
-    
-    print(f"Assistant: {result.assistant_message.parts[0].content}")
+    try:
+        result = await agent.step(
+            user_message=user_message,
+            model="gemini-2.0-flash",
+            router=router
+        )
+        
+        print(f"Assistant: {result.assistant_message.parts[0].content}")
+        
+        if result.tool_message:
+            print(f"Tool Result: {result.tool_message}")
+    except Exception as e:
+        print(f"Error: {e}")
+        print("\nFalling back to mock recommendation...")
+        
+        # Mock recommendation when the model fails
+        mock_result = RecommendationResult(
+            recommendations=[
+                Song(title="Moonlight Sonata", artist="Beethoven", release_year=1801, genre=Genre.CLASSICAL, mood=MoodTag.SAD),
+                Song(title="Gymnopédie No.1", artist="Erik Satie", release_year=1888, genre=Genre.CLASSICAL, mood=MoodTag.RELAXED)
+            ],
+            count=2,
+            genres_included=[Genre.CLASSICAL],
+            message="Found 2 classical songs from before 1900."
+        )
+        
+        print("Assistant: Here are some classical pieces from before 1900:")
+        for song in mock_result.recommendations:
+            print(f"- {song.title} by {song.artist} ({song.release_year}, {song.genre.value}, {song.mood.value})")
 
 
 if __name__ == "__main__":
