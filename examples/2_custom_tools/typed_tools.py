@@ -13,7 +13,7 @@ from aikernel import (
     LLMMessagePart,
     LLMSystemMessage,
     LLMUserMessage,
-    get_router,
+    LLMRouter,
 )
 from pydantic import BaseModel, Field, field_validator
 
@@ -179,8 +179,8 @@ async def main():
         )
     )
     
-    # Create a router for the LLM API with Gemini model
-    router = get_router(models=("gemini-2.0-flash",))
+    # Create a router for the LLM API
+    router = LLMRouter()
     
     # Print a note about the expected validation errors
     print("Note: You may see validation errors related to message content being None.")
@@ -195,7 +195,7 @@ async def main():
     
     result = await agent.step(
         user_message=user_message,
-        model="gemini-2.0-flash",
+        model="claude-3-sonnet-20240229",
         router=router
     )
     
@@ -210,7 +210,7 @@ async def main():
     
     result = await agent.step(
         user_message=user_message,
-        model="gemini-2.0-flash",
+        model="claude-3-sonnet-20240229",
         router=router
     )
     
