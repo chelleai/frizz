@@ -21,7 +21,7 @@ from pydantic import BaseModel, ValidationError
 from frizz._internal.tools import Tool
 from frizz._internal.types.response import AgentMessage, StepResult
 from frizz._internal.types.system import IGetToolSystemMessagePart
-from frizz._internal.patched_tools import patched_llm_tool_call as llm_tool_call
+from aikernel import llm_tool_call
 from frizz.errors import FrizzError
 
 
