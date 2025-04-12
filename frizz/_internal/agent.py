@@ -135,7 +135,7 @@ class Agent[ContextT]:
                 try:
                     parameters_response = await llm_tool_call(
                         messages=self._conversation.render(),
-                        model=model,  # This parameter is required for llm_tool_call
+                        model=model,
                         tools=[chosen_tool.as_llm_tool()],
                         tool_choice="required",
                         router=router,
