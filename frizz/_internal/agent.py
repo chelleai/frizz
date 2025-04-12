@@ -9,19 +9,19 @@ from aikernel import (
     LLMAssistantMessage,
     LLMMessagePart,
     LLMModelAlias,
+    LLMRouter,
     LLMSystemMessage,
     LLMToolMessage,
     LLMToolMessageFunctionCall,
     LLMUserMessage,
-    LLMRouter,
     llm_structured,
+    llm_tool_call,
 )
 from pydantic import BaseModel, ValidationError
 
 from frizz._internal.tools import Tool
 from frizz._internal.types.response import AgentMessage, StepResult
 from frizz._internal.types.system import IGetToolSystemMessagePart
-from aikernel import llm_tool_call
 from frizz.errors import FrizzError
 
 
