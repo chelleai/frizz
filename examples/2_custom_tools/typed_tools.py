@@ -151,7 +151,23 @@ async def main():
         system_message=LLMSystemMessage(
             parts=[LLMMessagePart(content="""
             You are a music recommendation assistant. Help users find music they might enjoy.
-            Use your recommendation tool whenever a user asks for music suggestions.
+            
+            IMPORTANT: You have access to ONLY ONE tool called "recommend_music" which you must use
+            whenever a user asks for music suggestions. Do not try to use any calculator tools.
+            
+            The recommend_music tool requires the following parameters:
+            - genres: A list of music genres (required)
+            - release_year_min: Minimum release year (optional)
+            - release_year_max: Maximum release year (optional)
+            - mood: Desired mood (optional)
+            - limit: Number of recommendations (optional, default 5)
+            
+            Example tool call:
+            {
+              "genres": ["rock", "jazz"],
+              "mood": "relaxed",
+              "limit": 5
+            }
         """)]
         )
     )
