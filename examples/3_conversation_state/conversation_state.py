@@ -6,7 +6,7 @@ and how context can be used to store and retrieve information during a conversat
 """
 import asyncio
 
-from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage
+from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage, get_router
 from pydantic import BaseModel, Field
 
 from frizz import Agent, tool
@@ -182,7 +182,7 @@ async def main():
     )
     
     # Create a router for the LLM API
-    router = LLMRouter()
+    router = get_router(models=("claude-3-sonnet-20240229",))
     
     # Example conversation that demonstrates state persistence
     print("Starting conversation with the shopping assistant...\n")

@@ -7,7 +7,7 @@ during a conversation, choosing between multiple available tools or direct respo
 import asyncio
 import re
 
-from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage
+from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage, get_router
 from pydantic import BaseModel, Field
 
 from frizz import Agent, tool
@@ -255,7 +255,7 @@ async def main():
     )
     
     # Create a router for the LLM API
-    router = LLMRouter()
+    router = get_router(models=("claude-3-sonnet-20240229",))
     
     # Example conversation
     print("Starting conversation with the multi-tool assistant...\n")

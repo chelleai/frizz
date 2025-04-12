@@ -14,6 +14,7 @@ from aikernel import (
     LLMRouter,
     LLMSystemMessage,
     LLMUserMessage,
+    get_router,
 )
 from pydantic import BaseModel, Field, field_validator
 
@@ -178,7 +179,7 @@ async def main():
     )
     
     # Create a router for the LLM API
-    router = LLMRouter()
+    router = get_router(models=("claude-3-sonnet-20240229",))
     
     # Print a note about the expected validation errors
     print("Note: You may see validation errors related to message content being None.")

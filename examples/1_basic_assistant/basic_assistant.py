@@ -6,7 +6,7 @@ calculator tool to perform arithmetic operations during a conversation.
 """
 import asyncio
 
-from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage
+from aikernel import Conversation, LLMMessagePart, LLMRouter, LLMSystemMessage, LLMUserMessage, get_router
 from pydantic import BaseModel
 
 from frizz import Agent, tool
@@ -71,7 +71,7 @@ async def main():
     )
     
     # Create a router for the LLM API
-    router = LLMRouter()
+    router = get_router(models=("claude-3-sonnet-20240229",))
     
     # Print a note about the expected validation errors
     print("Note: You may see validation errors related to message content being None.")
