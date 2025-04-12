@@ -151,8 +151,8 @@ async def main():
     print("Starting conversation with the patched agent...\n")
     
     # Create a user message
-    user_message = LLMUserMessage(parts=[LLMMessagePart(content="Hello, world!")])
-    print(f"User: {user_message.parts[0].content}")
+    user_message = LLMUserMessage(content="Hello, world!")
+    print(f"User: {user_message.content}")
     
     try:
         # Step with the agent (note: no model parameter here)

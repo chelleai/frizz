@@ -88,8 +88,8 @@ class DirectGeminiAgent:
             vertex_tool = Tool(
                 function_declarations=[
                     FunctionDeclaration(
-                        name=tool.name,
-                        description=tool.description,
+                        name=tool_item.name,
+                        description=tool_item.description,
                         parameters=Type.from_dict(param_schema)
                     )
                 ]
