@@ -14,6 +14,7 @@ from aikernel import (
     LLMRouter,
     LLMSystemMessage,
     LLMUserMessage,
+    get_router,
 )
 from pydantic import BaseModel, Field, field_validator
 
@@ -156,8 +157,8 @@ async def main():
         )
     )
     
-    # Create a router for the LLM API
-    router = LLMRouter()
+    # Create a router for the LLM API with Claude model
+    router = get_router(models=("claude-3.5-sonnet",))
     
     # Example conversation
     print("Starting conversation with the music recommendation assistant...\n")
@@ -168,7 +169,7 @@ async def main():
     
     result = await agent.step(
         user_message=user_message,
-        model="claude-3-sonnet-20240229",
+        model="claude-3.5-sonnet",
         router=router
     )
     
@@ -180,7 +181,7 @@ async def main():
     
     result = await agent.step(
         user_message=user_message,
-        model="claude-3-sonnet-20240229",
+        model="claude-3.5-sonnet",
         router=router
     )
     
