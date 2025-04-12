@@ -9,7 +9,7 @@ with a real weather API integration.
 """
 import asyncio
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
 from frizz import Agent, tool
@@ -26,7 +26,7 @@ class Coordinates(BaseModel):
 class WeatherRequestParams(BaseModel):
     """Parameters for requesting weather information."""
     location: str = Field(..., description="City name or address")
-    forecast_days: Optional[int] = Field(0, description="Days to forecast (0 = current weather only)", ge=0, le=7)
+    forecast_days: int | None = Field(0, description="Days to forecast (0 = current weather only)", ge=0, le=7)
 
 
 class WeatherCondition(BaseModel):
@@ -44,7 +44,7 @@ class WeatherResponse(BaseModel):
     location: str
     coordinates: Coordinates
     current: WeatherCondition
-    forecast: Optional[List[WeatherCondition]] = None
+    forecast: list[WeatherCondition] | None = None
     units: str = "metric"
 
 

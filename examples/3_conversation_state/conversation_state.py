@@ -5,7 +5,7 @@ This example demonstrates how an agent can maintain state across multiple intera
 and how context can be used to store and retrieve information during a conversation.
 """
 import asyncio
-from typing import Dict, List, Optional
+from typing import Optional
 
 from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
 from frizz import Agent, tool
@@ -30,7 +30,7 @@ class AddToCartParams(BaseModel):
 class RemoveFromCartParams(BaseModel):
     """Parameters for removing an item from the cart."""
     product_id: str
-    quantity: Optional[int] = Field(None, ge=1)
+    quantity: int | None = Field(None, ge=1)
 
 
 class ViewCartParams(BaseModel):
@@ -47,7 +47,7 @@ class CartItem(BaseModel):
 
 class CartResult(BaseModel):
     """Return type for all cart operations."""
-    items: List[CartItem]
+    items: list[CartItem]
     item_count: int
     total_price: float
     message: str
@@ -58,7 +58,7 @@ class ShoppingContext:
     """Shopping context that maintains the product catalog and cart state."""
     def __init__(self):
         # Product catalog
-        self.products: Dict[str, Product] = {
+        self.products: dict[str, Product] = {
             "p1": Product(id="p1", name="Laptop", price=999.99, category="Electronics"),
             "p2": Product(id="p2", name="Smartphone", price=699.99, category="Electronics"),
             "p3": Product(id="p3", name="Headphones", price=149.99, category="Electronics"),
@@ -69,7 +69,7 @@ class ShoppingContext:
         }
         
         # Shopping cart - persists between interactions
-        self.cart: Dict[str, CartItem] = {}
+        self.cart: dict[str, CartItem] = {}
     
     def add_to_cart(self, product_id: str, quantity: int) -> CartResult:
         """Add a product to the cart."""
@@ -94,7 +94,7 @@ class ShoppingContext:
         
         return self._get_cart_state(message)
     
-    def remove_from_cart(self, product_id: str, quantity: Optional[int] = None) -> CartResult:
+    def remove_from_cart(self, product_id: str, quantity: int | None = None) -> CartResult:
         """Remove a product from the cart."""
         if product_id not in self.cart:
             raise ValueError(f"Product with ID {product_id} not in your cart")

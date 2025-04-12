@@ -6,7 +6,7 @@ during a conversation, choosing between multiple available tools or direct respo
 """
 import asyncio
 import re
-from typing import List, Optional, Dict, Any
+from typing import Optional
 
 from aikernel import Conversation, LLMRouter, LLMSystemMessage, LLMUserMessage
 from frizz import Agent, tool
@@ -22,7 +22,7 @@ class FactLookupParams(BaseModel):
 class FactResult(BaseModel):
     """Result from fact lookup."""
     fact: str
-    source: Optional[str] = None
+    source: str | None = None
     confidence: float
 
 
@@ -35,7 +35,7 @@ class CalculatorResult(BaseModel):
     """Result from calculator."""
     expression: str
     result: float
-    steps: Optional[List[str]] = None
+    steps: list[str] | None = None
 
 
 class JokeParams(BaseModel):
