@@ -1,3 +1,10 @@
+"""
+Custom Agent implementation for examples that works with the current aikernel API.
+
+This file provides a modified Agent class that uses the router._completion method directly
+instead of relying on the llm_tool_call function which is currently broken.
+"""
+import json
 from collections.abc import Iterator
 from contextlib import contextmanager
 from functools import cached_property
@@ -15,7 +22,6 @@ from aikernel import (
     LLMToolMessageFunctionCall,
     LLMUserMessage,
     llm_structured,
-    llm_tool_call,
 )
 from pydantic import BaseModel, ValidationError
 
@@ -28,10 +34,8 @@ from frizz.errors import FrizzError
 class Agent[ContextT]:
     """An AI agent capable of using tools to assist in conversations.
     
-    The Agent class manages conversations with language models and facilitates 
-    the use of tools in response to user queries. It handles the workflow of 
-    receiving user input, generating AI responses, and executing tool calls
-    when appropriate.
+    This is a custom implementation that works around the broken llm_tool_call function
+    in the aikernel library by directly using the router._completion method.
     
     Type Parameters:
         ContextT: The type of the context object that will be passed to tools.
@@ -114,8 +118,6 @@ class Agent[ContextT]:
             self._conversation.add_user_message(message=user_message)
 
             with self.tool_aware_conversation():
-                # Removed model parameter as it's not supported in the current llm_structured API
-                # The router already knows which model to use
                 agent_message = await llm_structured(
                     messages=self._conversation.render(),
                     response_model=AgentMessage,
@@ -133,18 +135,46 @@ class Agent[ContextT]:
                     raise FrizzError(f"Tool {agent_message.structured_response.chosen_tool_name} not found")
 
                 try:
-                    parameters_response = await llm_tool_call(
-                        messages=self._conversation.render(),
+                    # Render messages and tools for the router
+                    rendered_messages = []
+                    for message in self._conversation.render():
+                        if isinstance(message, LLMToolMessage):
+                            invocation_message, response_message = message.render_call_and_response()
+                            rendered_messages.append(invocation_message)
+                            rendered_messages.append(response_message)
+                        else:
+                            rendered_messages.append(message.render())
+                    
+                    rendered_tools = [chosen_tool.as_llm_tool().render()]
+                    
+                    # Use the underlying _completion method directly to bypass the broken llm_tool_call
+                    raw_response = router._completion(
                         model=model,
-                        tools=[chosen_tool.as_llm_tool()],
+                        messages=rendered_messages,
+                        tools=rendered_tools,
                         tool_choice="required",
-                        router=router,
                     )
-                    parameters = chosen_tool.parameters_model.model_validate(parameters_response.tool_call.arguments)
+                    
+                    if len(raw_response.choices) == 0:
+                        raise FrizzError("No response from model")
+                    
+                    tool_calls = raw_response.choices[0].message.tool_calls or []
+                    if len(tool_calls) == 0:
+                        raise FrizzError("Model did not make a tool call")
+                    
+                    tool_call = tool_calls[0]
+                    try:
+                        arguments = json.loads(tool_call.function.arguments)
+                    except json.JSONDecodeError as error:
+                        raise FrizzError(f"Invalid tool arguments: {error}")
+                    
+                    parameters = chosen_tool.parameters_model.model_validate(arguments)
                 except ValidationError as error:
                     raise FrizzError(
                         f"Invalid tool parameters for tool {agent_message.structured_response.chosen_tool_name}: {error}"
                     )
+                except Exception as error:
+                    raise FrizzError(f"Error calling tool: {error}")
 
                 try:
                     result = await chosen_tool(
@@ -156,12 +186,12 @@ class Agent[ContextT]:
                     )
 
                 tool_message = LLMToolMessage(
-                    tool_call_id=parameters_response.tool_call.id,
-                    name=parameters_response.tool_call.tool_name,
+                    tool_call_id=tool_call.id,
+                    name=tool_call.function.name,
                     response=result.model_dump(),
                     function_call=LLMToolMessageFunctionCall(
-                        name=parameters_response.tool_call.tool_name,
-                        arguments=parameters_response.tool_call.arguments,
+                        name=tool_call.function.name,
+                        arguments=arguments,
                     ),
                 )
                 self._conversation.add_tool_message(tool_message=tool_message)
