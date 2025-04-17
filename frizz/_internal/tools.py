@@ -1,8 +1,9 @@
 from collections.abc import Callable
 from typing import Protocol, get_type_hints
 
-from aikernel import Conversation, LLMTool
 from pydantic import BaseModel
+
+from aikernel import Conversation, LLMTool
 
 
 class IToolFn[ContextT, ParametersT: BaseModel, ReturnT](Protocol):
@@ -12,7 +13,13 @@ class IToolFn[ContextT, ParametersT: BaseModel, ReturnT](Protocol):
 
 
 class Tool[ContextT, ParametersT: BaseModel, ReturnT: BaseModel]:
-    def __init__(self, fn: IToolFn[ContextT, ParametersT, ReturnT], /, *, name: str | None = None) -> None:
+    def __init__(
+        self,
+        fn: IToolFn[ContextT, ParametersT, ReturnT],
+        /,
+        *,
+        name: str | None = None,
+    ) -> None:
         self._fn = fn
         self._name = name
 
